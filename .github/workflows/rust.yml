@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build --release --verbose --target x86_64-pc-windows-msvc
+      run: rustup target add x86_64-pc-windows-msvc && cargo build --release --verbose --target x86_64-pc-windows-msvc
 
     - name: Get Build Artifact
       uses: actions/upload-artifact@v3
