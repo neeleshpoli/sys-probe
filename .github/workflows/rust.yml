@@ -15,15 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
-      run: rustup target add x86_64-pc-windows-msvc && cargo build --release --verbose --target x86_64-pc-windows-msvc
-
-    - name: Get Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: sys-probe
-        path: target/release/sys-probe.exe
-        
+      
     - uses: actions/cache@v3
       with:
         path: |
@@ -33,3 +25,12 @@ jobs:
           ~/.cargo/git/db/
           target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Build
+      run: rustup target add x86_64-pc-windows-msvc && cargo build --release --verbose --target x86_64-pc-windows-msvc  
+
+    - name: Get Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: sys-probe
+        path: target/release/sys-probe.exe
