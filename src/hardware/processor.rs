@@ -1,5 +1,6 @@
+#[cfg(target_os = "windows")]
 pub mod windows {
-    use crate::utils::windows::get_wmi;
+    use crate::utils::windows::{WMIWrapper, Error::SysProbeResult};
 
     #[derive(Debug)]
     pub struct ProcessorInfo {
@@ -14,8 +15,10 @@ pub mod windows {
         voltage_caps: Option<String>,
     }
 
-    pub fn get_processor_info() -> Result<ProcessorInfo, windows::core::Error> {
-        let processor_info = get_wmi("Win32_Processor", "Name, NumberOfCores, ThreadCount, CurrentClockSpeed, CurrentVoltage, MaxClockSpeed, SocketDesignation, LoadPercentage, VoltageCaps")?;
+    pub fn get_processor_info() -> SysProbeResult<ProcessorInfo> {
+        let wmi_getter = WMIWrapper::new("root\\CIMV2")?;
+        let binding = wmi_getter.get("Win32_Processor", "Name, NumberOfCores, ThreadCount, CurrentClockSpeed, CurrentVoltage, MaxClockSpeed, SocketDesignation, LoadPercentage, VoltageCaps")?;
+        let processor_info = binding.get(0).unwrap();
 
         Ok(
             ProcessorInfo {
